@@ -1,0 +1,79 @@
+.vue__form-select{
+  height: 38px;
+  padding: 0;
+  cursor: pointer;
+
+  &::after{
+    content: "";
+    display: inline-block;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+    width: 8px;
+    height: 8px;
+    transform: rotate(45deg);
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    transition: .2s;
+  }
+
+  &.expand::after{
+    transform: rotate(-136deg);
+    top: 15px;
+  }
+
+  span.vue__form-select_selected-option-text{
+    position: relative;
+    top: 5px;
+    left: 8px;
+  }
+}
+
+ul.vue__form-select_options{
+  list-style: none;
+  padding-left: 0;
+  margin: -1px;
+  z-index: 0;
+  width: 100.6%;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  max-height: 300px;
+  position: relative;
+  top: 10px;
+  background-color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transition: .2s;
+  overflow: hidden;
+
+  &.expand{
+    z-index: 99;
+    opacity: 1;
+    pointer-events: all;
+    overflow: auto;
+    max-height: 300px;
+  }
+
+  li{
+    cursor: pointer;
+    padding: 5px 10px;
+
+    &:hover:not(.vue__form-select_options_search){
+      background-color: rgb(216, 216, 216);
+    }
+
+    &.selected::after{
+      content: '';
+      display: inline-block;
+      border-right: 2px solid black;
+      border-bottom: 2px solid black;
+      width: 7px;
+      height: 13px;
+      transform: rotate(45deg);
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      transition: 0.2s;
+    }
+  }
+}
