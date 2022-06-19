@@ -39,14 +39,6 @@
     @input="updateValue"
   />
 
-  <!-- <input
-    v-if="type == 'select'"
-    style="display:none;"
-    :class="{ [classe]: classe, 'is-invalid': fails }"
-    :value="modelValue"
-    @input="updateValue"
-  /> -->
-
   <template v-if="type == 'select'">
     <div
       @click="expandSelectOptions"
@@ -66,7 +58,7 @@
       }"
     >
       <span class="vue__form-select_selected-option-text">{{selectedOptionsText}}</span>
-      <ul class="vue__form-select_options" :class="{expand: selectOptionsExpanded}">
+      <ul class="vue__form-select_options" :class="{expand: selectOptionsExpanded, search: search}">
         <li @click.stop class="vue__form-select_options_search" v-if="search">
           <input type="text" class="form-control" placeholder="Pesquisar..." v-model="selectOptionsSearch">
         </li>
@@ -157,19 +149,29 @@ export default defineComponent({
     },
     selectOption(option){
       this.selectedOptions[option.value] = !this.selectedOptions[option.value] ? option.label : false;
+      let selected = null;
 
-      let i = 0;
-      let options = [];
-      let selected = [];
-      for(let item in this.selectedOptions){
-        if(this.selectedOptions[item]){
-          options[i] = this.selectedOptions[item];
-          selected[i] = item;
-          i++;
+      if(this.multiple){
+        let i = 0;
+        let options = [];
+        selected = [];
+        for(let item in this.selectedOptions){
+          if(this.selectedOptions[item]){
+            options[i] = this.selectedOptions[item];
+            selected[i] = item;
+            i++;
+          }
         }
+        this.selectedOptionsText = (options.length > 3) ? `${options.length} itens selecionados` : options.join(', ');
+        if(!options.length) this.selectedOptionsText = this.noneOptionSelected;
+      }else{
+        selected = Object.keys(this.selectedOptions);
+        this.selectedOptionsText = Object.values(this.selectedOptions);
+        console.log(this.selectedOptions)
       }
-      this.selectedOptionsText = (options.length > 3) ? `${options.length} itens selecionados` : options.join(', ');
-      if(!options.length) this.selectedOptionsText = this.noneOptionSelected;
+
+      console.log(selected)
+
       this.updateValue(selected);
     },
     updateValue(e) {
@@ -196,6 +198,11 @@ export default defineComponent({
         }
         if (item == "email" && emailValidate(value)) {
           fails = "Este campo deve ser um e-mail válido";
+          break;
+        }
+        if (item == "notspeacial") {
+          let ban = format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+          if(value.test(ban)) fails = 'Este campo não aceita caracteres especiais';
           break;
         }
         if (item.includes("min") || this.min) {
