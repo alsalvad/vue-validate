@@ -29,7 +29,6 @@
       placeholder,
       autocomplete,
       autofocus,
-      checked,
       disabled,
       readonly,
       required,
@@ -43,15 +42,12 @@
     <div
       @click="expandSelectOptions"
       class="vue__form-select"
-      :class="{ [classe]: classe, 'is-invalid': fails, expand: selectOptionsExpanded }"
+      :class="{ [classe]: classe, 'is-invalid': fails, expand: selectOptionsExpanded, disabled: (readonly || disabled) }"
       v-bind="{
         id,
-        placeholder,
         autocomplete,
         autofocus,
-        checked,
         disabled,
-        multiple,
         readonly,
         required,
         search,
@@ -92,7 +88,7 @@ export default defineComponent({
     placeholder: { type: String, required: false },
     autocomplete: { type: Boolean, required: false },
     autofocus: { type: Boolean, required: false },
-    checked: { type: Boolean, required: false },
+    checked: { required: false },
     disabled: { type: Boolean, required: false },
     multiple: { type: Boolean, required: false },
     search: { type: Boolean, required: false },
@@ -107,7 +103,7 @@ export default defineComponent({
     return {
       fails: false,
       classe: this.class,
-      selectedOptions: [],
+      selectedOptions: this.multiple ? [] : {},
       _options: this.options,
       selectOptionsExpanded: false,
       selectOptionsSearch: '',
@@ -115,7 +111,13 @@ export default defineComponent({
     };
   },
   mounted() {
-    if(this.type == 'select' && typeof this.options == 'undefined') console.warn(`The component '${this.id}' was defined as a select but no options was given`);
+    if(this.type == 'select') {
+      if(typeof this.options == 'undefined') console.warn(`The component '${this.id}' was defined as a select but no options was given`);
+      if(this.checked){
+        console.log(this.checked)
+        this.selectedOptions[parseInt(this.checked)] = this._options[parseInt(this.checked)]
+      }
+    }
 
     let shouldValidate = typeof this.rules == "undefined";
     this.validate[this.id] = shouldValidate;
@@ -144,12 +146,17 @@ export default defineComponent({
     }
   },
   methods: {
+    blur(param=false){ // TODO
+      console.log(param)
+    },
     expandSelectOptions(){
+      if(this.readonly || this.disabled) return this.selectOptionsExpanded = false;
       this.selectOptionsExpanded = !this.selectOptionsExpanded;
     },
     selectOption(option){
       this.selectedOptions[option.value] = !this.selectedOptions[option.value] ? option.label : false;
       let selected = null;
+      let dump = this.selectedOptions;
 
       if(this.multiple){
         let i = 0;
@@ -165,12 +172,17 @@ export default defineComponent({
         this.selectedOptionsText = (options.length > 3) ? `${options.length} itens selecionados` : options.join(', ');
         if(!options.length) this.selectedOptionsText = this.noneOptionSelected;
       }else{
-        selected = Object.keys(this.selectedOptions);
-        this.selectedOptionsText = Object.values(this.selectedOptions);
-        console.log(this.selectedOptions)
+        this.selectedOptions = {};
+        selected = false;
+        for(let index in dump){
+          if(index == option.value){
+            this.selectedOptions[index] = dump[index];
+            selected = index;
+            this.selectedOptionsText = dump[index];
+          }
+        }
+        this.selectedOptionsText = this.selectedOptionsText || this.noneOptionSelected;
       }
-
-      console.log(selected)
 
       this.updateValue(selected);
     },

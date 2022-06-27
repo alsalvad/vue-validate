@@ -4,7 +4,7 @@
       <div class="form-group col-md-6">
         <FInput v-model="form.nome" :validate="validate" id="nome" type="text" class="form-control mt-3" rules="required|min:5|max:10"/>
         <!-- <FInput v-model="form.nome" :validate="validate" id="nome" type="textarea" class="form-control mb-3" :min="5" :max="10" rules="required"/> -->
-        <FInput v-model="form.estados" :validate="validate" id="nome" type="select" class="form-control mt-3"  search rules="required" :options="options" />
+        <FInput v-model="form.estados" :validate="validate" id="nome" type="select" class="form-control mt-3" rules="required" :options="options" multiple search checked="1" />
       </div>
       <div class="form-group col-md-6">
         <h6>Input: </h6>
@@ -24,7 +24,6 @@
 <script>
 import { defineComponent } from "vue";
 import api from '@/services/api';
-import { parse } from "@babel/parser";
 
 export default defineComponent({
   data(){
@@ -45,20 +44,21 @@ export default defineComponent({
     }
   },
   mounted(){
-    let valor = '1.698.01';
-    let inicio = (valor.substring(0, valor.length -3)).toString().replace('.', '');
-    let fim = valor.slice(-3);
-    valor = `${inicio}${fim}`;
-
-    console.log(valor)
-
-    api.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados/').then(({data}) => {
-      let options = [];
-      data.map((item, i) => {
-        options[i] = { value: item.sigla, label: item.nome };
-      });
-      this.options = options;
-    });
+    this.options = [
+      { label: '01', value: 1 },
+      { label: '02', value: 2 },
+      { label: '03', value: 3 },
+      { label: '04', value: 4 },
+      { label: '05', value: 5 },
+      { label: '06', value: 6 },
+    ]
+    // api.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados/').then(({data}) => {
+    //   let options = [];
+    //   data.map((item, i) => {
+    //     options[i] = { value: item.sigla, label: item.nome };
+    //   });
+    //   this.options = options;
+    // });
   },
   methods: {
     load(){
