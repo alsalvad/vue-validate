@@ -1,6 +1,12 @@
 <template>
   <div class="col-lg-12">
-
+    <div class="row mt-3">
+      <div class="col-md-6 offset-md-6">
+        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="Toggle All" @click="toggleAll">
+          <i class="fa fa-code"></i>
+        </button>
+      </div>
+    </div>
     <div class="row mt-3">
       <div class="form-group col-md-6">
         <input
@@ -11,7 +17,7 @@
         >
       </div>
       <div class="form-group col-md-6 result">
-        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="hide.default = !hide.default" :class="{ active: !hide.default }">
+        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="codeState.default = !codeState.default" :class="{ active: codeState.default }">
           <i class="fa fa-code"></i>
         </button>
         <span>
@@ -19,7 +25,7 @@
           {{form.default}}
         </span>
       </div>
-      <div class="col-md-6" :class="{ hide: hide.default }">
+      <div class="col-md-6 code-details" :class="{ active: codeState.default }">
 <pre>
 <code class="language-html"> &lt;input
   v-model=&quot;form.default&quot;
@@ -45,7 +51,7 @@
         />
       </div>
       <div class="form-group col-md-6 result">
-        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="hide.text = !hide.text" :class="{ active: !hide.text }">
+        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="codeState.text = !codeState.text" :class="{ active: codeState.text }">
           <i class="fa fa-code"></i>
         </button>
         <span>
@@ -54,7 +60,7 @@
         </span>
       </div>
 
-      <div class="col-md-6" :class="{ hide: hide.text }">
+      <div class="col-md-6 code-details" :class="{ active: codeState.text }">
 <pre>
 <code class="html"> &lt;FInput
   v-model=&quot;form.text&quot;
@@ -77,13 +83,13 @@
           :validate="validate"
           class="form-control"
           id="notspecial"
-          type="notspecial"
+          type="text"
           placeholder="Not special"
           rules="required|notspecial"
         />
       </div>
       <div class="form-group col-md-6 result">
-        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="hide.notspecial = !hide.notspecial" :class="{ active: !hide.notspecial }">
+        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="codeState.notspecial = !codeState.notspecial" :class="{ active: codeState.notspecial }">
           <i class="fa fa-code"></i>
         </button>
         <span>
@@ -92,7 +98,7 @@
         </span>
       </div>
 
-      <div class="col-md-6" :class="{ hide: hide.notspecial }">
+      <div class="col-md-6 code-details" :class="{ active: codeState.notspecial }">
 <pre>
 <code class="html"> &lt;FInput
   v-model=&quot;form.notspecial&quot;
@@ -121,7 +127,7 @@
         />
       </div>
       <div class="form-group col-md-6 result">
-        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="hide.email = !hide.email" :class="{ active: !hide.email }">
+        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="codeState.email = !codeState.email" :class="{ active: codeState.email }">
           <i class="fa fa-code"></i>
         </button>
         <span>
@@ -130,7 +136,7 @@
         </span>
       </div>
 
-      <div class="col-md-6" :class="{ hide: hide.email }">
+      <div class="col-md-6 code-details" :class="{ active: codeState.email }">
 <pre>
 <code class="html"> &lt;FInput
   v-model=&quot;form.email&quot;
@@ -159,7 +165,7 @@
         />
       </div>
       <div class="form-group col-md-6 result">
-        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="hide.number = !hide.number" :class="{ active: !hide.number }">
+        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="codeState.number = !codeState.number" :class="{ active: codeState.number }">
           <i class="fa fa-code"></i>
         </button>
         <span>
@@ -168,7 +174,7 @@
         </span>
       </div>
 
-      <div class="col-md-6" :class="{ hide: hide.number }">
+      <div class="col-md-6 code-details" :class="{ active: codeState.number }">
 <pre>
 <code class="html"> &lt;FInput
   v-model=&quot;form.number&quot;
@@ -198,7 +204,7 @@
         />
       </div>
       <div class="form-group col-md-6 result">
-        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="hide.textarea = !hide.textarea" :class="{ active: !hide.textarea }">
+        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="codeState.textarea = !codeState.textarea" :class="{ active: codeState.textarea }">
           <i class="fa fa-code"></i>
         </button>
         <span>
@@ -207,7 +213,7 @@
         </span>
       </div>
 
-      <div class="col-md-6" :class="{ hide: hide.textarea }">
+      <div class="col-md-6 code-details" :class="{ active: codeState.textarea }">
 <pre>
 <code class="html"> &lt;FInput
   v-model=&quot;form.textarea&quot;
@@ -237,7 +243,7 @@
         />
       </div>
       <div class="form-group col-md-6 result">
-        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="hide.select = !hide.select" :class="{ active: !hide.select }">
+        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="codeState.select = !codeState.select" :class="{ active: codeState.select }">
           <i class="fa fa-code"></i>
         </button>
         <span>
@@ -246,7 +252,7 @@
         </span>
       </div>
 
-      <div class="col-md-6" :class="{ hide: hide.select }">
+      <div class="col-md-6 code-details" :class="{ active: codeState.select }">
 <pre>
 <code class="html"> &lt;FInput
   v-model=&quot;form.select&quot;
@@ -276,10 +282,11 @@
           checkAll
           placeholder="Custom none selected options"
           searchPlaceholder="Custom search placeholder..."
+          searchClass="form-control"
         />
       </div>
       <div class="form-group col-md-6 result">
-        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="hide.selectMultiple = !hide.selectMultiple" :class="{ active: !hide.selectMultiple }">
+        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="codeState.selectMultiple = !codeState.selectMultiple" :class="{ active: codeState.selectMultiple }">
           <i class="fa fa-code"></i>
         </button>
         <span>
@@ -288,7 +295,7 @@
         </span>
       </div>
 
-      <div class="col-md-6" :class="{ hide: hide.selectMultiple }">
+      <div class="col-md-6 code-details" :class="{ active: codeState.selectMultiple }">
 <pre>
 <code class="html"> &lt;FInput
   v-model=&quot;form.selectMultiple&quot;
@@ -302,6 +309,166 @@
   checkAll
   placeholder=&quot;Custom none selected options&quot;
   searchPlaceholder=&quot;Custom search placeholder...&quot;
+  seachClass=&quot;form-control&quot;
+/&gt;
+</code>
+</pre>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="form-group col-md-6">
+        <FInput
+          v-model="form.noclass"
+          :validate="validate"
+          id="noclass"
+          type="text"
+          rules="required|min:2|max:4"
+          placeholder="No class"
+          removeDefaultClass
+        />
+      </div>
+      <div class="form-group col-md-6 result">
+        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="codeState.noclass = !codeState.noclass" :class="{ active: codeState.noclass }">
+          <i class="fa fa-code"></i>
+        </button>
+        <span>
+          <h6>No class: </h6>
+          {{form.noclass}}
+        </span>
+      </div>
+
+      <div class="col-md-6 code-details" :class="{ active: codeState.noclass }">
+<pre>
+<code class="html">&lt;FInput
+  v-model=&quot;form.noclass&quot;
+  :validate=&quot;validate&quot;
+  id=&quot;noclass&quot;
+  type=&quot;text&quot;
+  rules=&quot;required|min:2|max:4&quot;
+  placeholder=&quot;No class&quot;
+  removeDefaultClass
+/&gt;
+</code>
+</pre>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="form-group col-md-6">
+        <!-- <label>
+          <input type="checkbox" v-model="form.checkbox" value="1">
+        </label>
+        <label>
+          <input type="checkbox" v-model="form.checkbox" value="2">
+        </label>
+        <label>
+          <input type="checkbox" v-model="form.checkbox" value="3">
+        </label> -->
+        <FInput
+          v-model="form.checkbox"
+          :validate="validate"
+          id="checkbox"
+          type="checkbox"
+          rules="required|min:2|max:4"
+          value="1"
+          label="Checkbox"
+        />
+        <FInput
+          v-model="form.checkbox"
+          :validate="validate"
+          id="checkbox"
+          type="checkbox"
+          rules="required|min:2|max:4"
+          value="2"
+          label="Checkbox"
+        />
+        <FInput
+          v-model="form.checkbox"
+          :validate="validate"
+          id="checkbox"
+          type="checkbox"
+          rules="required|min:2|max:4"
+          value="3"
+          label="Checkbox"
+        />
+      </div>
+      <div class="form-group col-md-6 result">
+        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="codeState.checkbox = !codeState.checkbox" :class="{ active: codeState.checkbox }">
+          <i class="fa fa-code"></i>
+        </button>
+        <span>
+          <h6>Checkbox: </h6>
+          {{form.checkbox}}
+        </span>
+      </div>
+
+      <div class="col-md-6 code-details" :class="{ active: codeState.checkbox }">
+<pre>
+<code class="html">&lt;FInput
+  v-model=&quot;form.noclass&quot;
+  :validate=&quot;validate&quot;
+  id=&quot;noclass&quot;
+  type=&quot;text&quot;
+  rules=&quot;required|min:2|max:4&quot;
+  placeholder=&quot;No class&quot;
+  removeDefaultClass
+/&gt;
+</code>
+</pre>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="form-group col-md-6">
+        <FInput
+          v-model="form.radio"
+          :validate="validate"
+          id="radio"
+          type="radio"
+          rules="required|min:2|max:4"
+          value="1"
+          label="Radio"
+        />
+        <FInput
+          v-model="form.radio"
+          :validate="validate"
+          id="radio"
+          type="radio"
+          rules="required|min:2|max:4"
+          value="2"
+          label="Radio"
+        />
+        <FInput
+          v-model="form.radio"
+          :validate="validate"
+          id="radio"
+          type="radio"
+          rules="required|min:2|max:4"
+          value="3"
+          label="Radio"
+        />
+      </div>
+      <div class="form-group col-md-6 result">
+        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="codeState.radio = !codeState.radio" :class="{ active: codeState.radio }">
+          <i class="fa fa-code"></i>
+        </button>
+        <span>
+          <h6>Radio: </h6>
+          {{form.radio}}
+        </span>
+      </div>
+
+      <div class="col-md-6 code-details" :class="{ active: codeState.radio }">
+<pre>
+<code class="html">&lt;FInput
+  v-model=&quot;form.noclass&quot;
+  :validate=&quot;validate&quot;
+  id=&quot;noclass&quot;
+  type=&quot;text&quot;
+  rules=&quot;required|min:2|max:4&quot;
+  placeholder=&quot;No class&quot;
+  removeDefaultClass
 /&gt;
 </code>
 </pre>
@@ -335,16 +502,20 @@ export default defineComponent({
         textarea: '',
         select: '',
         selectMultiple: [],
+        noclass: '',
+        checkbox: [],
+        radio: ''
       },
-      hide: {
-        default: true,
-        text: true,
-        notspecial: true,
-        email: true,
-        number: true,
-        textarea: true,
-        select: true,
-        selectMultiple: true
+      codeState: {
+        default: false,
+        text: false,
+        notspecial: false,
+        email: false,
+        number: false,
+        textarea: false,
+        select: false,
+        selectMultiple: false,
+        noclass: false
       },
       validate: [],
       itens: [
@@ -378,10 +549,11 @@ export default defineComponent({
     load(){
 
     },
-    toggleCode(item){
-      console.log(item)
-      item = !item
-    },
+    toggleAll(){
+      for(let item in this.codeState){
+        this.codeState[item] = !this.codeState[item];
+      }
+    }
   }
 });
 </script>
@@ -389,7 +561,7 @@ export default defineComponent({
 <style>
 pre{
   margin-bottom: -20px;
-
+  border-radius: 3px;
 }
 .result span,
 .result button{
@@ -402,6 +574,17 @@ pre{
 }
 .result .expandCode.active{
   box-shadow: inset 1px 1px 7px 0px #181818;
+}
+.code-details{
+  max-height: 0;
+  overflow: hidden;
+  transition: .3s;
+  margin-top: 3px;
+}
+.code-details.active{
+  transition: .9s;
+  max-height: 1000px;
+  /* overflow: unset; */
 }
 h6{
   margin-bottom: 0;

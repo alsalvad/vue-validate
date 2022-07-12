@@ -1,10 +1,9 @@
 <template>
   <input
-    v-if="type != 'textarea' && type != 'select'"
+    v-if="type == 'text' || type == 'email' || type == 'number'"
     :value="modelValue"
     :type="type"
-    class="vue__form-default"
-    :class="{ [classe]: classe, 'is-invalid': fails }"
+    :class="{ [classe]: classe, 'is-invalid': fails, 'vue__form-default': !removeDefaultClass }"
     v-bind="{
       type,
       id,
@@ -23,8 +22,7 @@
 
   <textarea
     v-else-if="type == 'textarea'"
-    :class="{ [classe]: classe, 'is-invalid': fails }"
-    class="vue__form-default"
+    :class="{ [classe]: classe, 'is-invalid': fails, 'vue__form-default': !removeDefaultClass }"
     :value="modelValue"
     v-bind="{
       id,
@@ -44,8 +42,14 @@
     <div
       tabindex="0"
       @click="expandSelectOptions"
-      class="vue__form-select vue__form-default"
-      :class="{ [classe]: classe, 'is-invalid': fails, expand: selectOptionsExpanded, disabled: (readonly || disabled) }"
+      :class="{
+        [classe]: classe,
+        'is-invalid': fails,
+        'vue__form-default': !removeDefaultClass,
+        'vue__form-select': !removeDefaultClass,
+        expand: selectOptionsExpanded,
+        disabled: (readonly || disabled)
+      }"
       v-bind="{
         id,
         autofocus,
@@ -61,7 +65,7 @@
           <button @click.stop="doUncheckAll" type="button">{{uncheckAllText}}</button>
         </li>
         <li @click.stop class="vue__form-select_options_search" v-if="search">
-          <input type="text" class="vue__form-default" :placeholder="searchPlaceholder" v-model="selectOptionsSearch">
+          <input type="text" class="vue__form-default" :class="searchClass" :placeholder="searchPlaceholder" v-model="selectOptionsSearch">
         </li>
         <li
           v-for="option in _options"
@@ -73,6 +77,32 @@
         </li>
       </ul>
     </div>
+  </template>
+
+  <template v-else-if="type == 'checkbox' || type == 'radio'">
+    <label
+      :class="{
+        [classe]: classe,
+        'is-invalid': fails,
+        'vue__form-default_checkbox': !removeDefaultClass,
+        expand: selectOptionsExpanded,
+        disabled: (readonly || disabled)
+      }"
+    >
+      <input
+        :type="type"
+        @click="updateValue"
+        v-bind="{
+          id,
+          autofocus,
+          disabled,
+          readonly,
+          required,
+          value
+        }"
+      >
+      {{label}}
+    </label>
   </template>
   <span class="invalid-feedback" :class="{ show: fails, hide: !fails }">{{ fails }}</span>
 </template>
@@ -110,9 +140,13 @@ export default defineComponent({
     options: { type: Array, required: false },
     searchPlaceholder: { type: String, required: false, default: aText.searchPlaceholder },
     search: { type: Boolean, required: false },
+    searchClass: { Type: String, required: false },
     checkAll: { type: Boolean, required: false },
     checkAllText: { type: String, required: false, default: aText.checkAll },
     uncheckAllText: { type: String, required: false, default: aText.uncheckAll },
+    removeDefaultClass: { type: Boolean, required: false },
+    label: { type: String, required: false },
+    value: { required: false }
   },
   data() {
     return {
@@ -124,10 +158,15 @@ export default defineComponent({
       selectOptionsSearch: '',
       selectedOptionsText: this.placeholder || aText.noneSelectedText,
       noneSelectedOptions: true,
-      aText: aText
+      aText: aText,
+      isInput: false,
+      arrReturn: []
     };
   },
   mounted() {
+    ['text', 'email', 'number'].map(item => {
+      this.isInput = (item == this.type);
+    });
     if(this.type == 'select') {
       if(typeof this.options == 'undefined') console.warn(`The component '${this.id}' was defined as a select but no options was given`);
     }
@@ -237,6 +276,15 @@ export default defineComponent({
     },
     updateValue(e) {
       let value = (e.target && typeof e.target.value !== 'undefined') ? e.target.value : e;
+      if(this.type == 'checkbox' || this.type == 'radio'){
+        // value = e.target.checked ? value : null;
+        if(Array.isArray(this.modelValue)){
+          value = this.arrReturn.push(value);
+        }
+
+        console.log(Array.isArray(this.modelValue))
+        return
+      }
       this.$emit('update:modelValue', value);
       this.doValidate(value);
     },
@@ -295,7 +343,7 @@ export default defineComponent({
       .match( /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ );
     }
   },
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'input'],
 });
 </script>
 
