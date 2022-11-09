@@ -14,5 +14,13 @@ export const completed = (id) => {
   emitter.emit('btCompleted', id);
 };
 
+export const doValidate = (fields) => {
+  for(let field in fields){
+    if(!fields[field]){
+      emitter.emit("doValidate", field);
+    }
+  }
+}
+
 
 export default {};

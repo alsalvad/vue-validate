@@ -18,7 +18,7 @@ import { defineComponent } from "vue";
 import { emitter } from "./form";
 
 export default defineComponent({
-  name: "FButton",
+  name: "vrButton",
   props: {
     id: { type: String, required: false },
     class: { type: String, required: false },
@@ -33,17 +33,17 @@ export default defineComponent({
     };
   },
   watch: {
-  completed(val){
-     console.log('watch', val)
-    this.onCompleted();
-  }
+    completed(val){
+      console.log('watch', val)
+      this.onCompleted();
+    }
   },
-  // mounted(){
-  //   emitter.on("btCompleted", (id) => {
-  //     if (this.id != id) return;
-  //     this.completed();
-  //   });
-  // },
+  mounted(){
+    emitter.on("btCompleted", (id) => {
+      if (this.id != id) return;
+      this.completed();
+    });
+  },
   // emits: ['click'],
   methods: {
     clicked() {
@@ -52,7 +52,7 @@ export default defineComponent({
       // this.$emit("click", true);
       // let $this = this
       // setTimeout(function(){
-        // $this.completed($this)
+      //   $this.completed($this)
       // }, 1000)
 
       //this.testeFuncao();
@@ -61,7 +61,7 @@ export default defineComponent({
       console.log('dasda');
       this.loading = false;
       this._disabled = false;
-      // this._state = false;
+      this._state = false;
     },
   },
 });

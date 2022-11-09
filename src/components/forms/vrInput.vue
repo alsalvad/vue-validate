@@ -1,9 +1,9 @@
 <template>
   <input
-    v-if="type == 'text' || type == 'email' || type == 'number'"
+    v-if="isInput"
     :value="modelValue"
     :type="type"
-    :class="{ [classe]: classe, 'is-invalid': fails, 'vue__form-default': !removeDefaultClass }"
+    :class="{ [classe]: classe, 'is-invalid': fails, 'vr_input-default': !removeDefaultClass }"
     v-bind="{
       type,
       id,
@@ -22,7 +22,7 @@
 
   <textarea
     v-else-if="type == 'textarea'"
-    :class="{ [classe]: classe, 'is-invalid': fails, 'vue__form-default': !removeDefaultClass }"
+    :class="{ [classe]: classe, 'is-invalid': fails, 'vr_input-default': !removeDefaultClass }"
     :value="modelValue"
     v-bind="{
       id,
@@ -41,12 +41,12 @@
   <template v-else-if="type == 'select'">
     <div
       tabindex="0"
-      @click="expandSelectOptions"
+      @click.stop="expandSelectOptions"
       :class="{
         [classe]: classe,
         'is-invalid': fails,
-        'vue__form-default': !removeDefaultClass,
-        'vue__form-select': !removeDefaultClass,
+        'vr_input-default': !removeDefaultClass,
+        'vr_input-select': !removeDefaultClass,
         expand: selectOptionsExpanded,
         disabled: (readonly || disabled)
       }"
@@ -58,14 +58,14 @@
         required
       }"
     >
-      <span class="vue__form-select_selected-option-text" :class="{noneSelectedOptions: noneSelectedOptions}">{{selectedOptionsText}}</span>
-      <ul class="vue__form-select_options" :class="{expand: selectOptionsExpanded, search: search}">
-        <li @click.stop class="vue__form-select_actions" v-if="(checkAll && multiple)">
+      <span class="vr_input-select_selected-option-text" :class="{noneSelectedOptions: noneSelectedOptions}">{{selectedOptionsText}}</span>
+      <ul class="vr_input-select_options" :class="{expand: selectOptionsExpanded, search: search}">
+        <li @click.stop class="vr_input-select_actions" v-if="(checkAll && multiple)">
           <button @click.stop="doCheckAll" type="button">{{checkAllText}}</button>
           <button @click.stop="doUncheckAll" type="button">{{uncheckAllText}}</button>
         </li>
-        <li @click.stop class="vue__form-select_options_search" v-if="search">
-          <input type="text" class="vue__form-default" :class="searchClass" :placeholder="searchPlaceholder" v-model="selectOptionsSearch">
+        <li @click.stop class="vr_input-select_options_search" v-if="search">
+          <input type="text" class="vr_input-default" :class="searchClass" :placeholder="searchPlaceholder" v-model="selectOptionsSearch">
         </li>
         <li
           v-for="option in _options"
@@ -79,31 +79,6 @@
     </div>
   </template>
 
-  <template v-else-if="type == 'checkbox' || type == 'radio'">
-    <label
-      :class="{
-        [classe]: classe,
-        'is-invalid': fails,
-        'vue__form-default_checkbox': !removeDefaultClass,
-        expand: selectOptionsExpanded,
-        disabled: (readonly || disabled)
-      }"
-    >
-      <input
-        :type="type"
-        @click="updateValue"
-        v-bind="{
-          id,
-          autofocus,
-          disabled,
-          readonly,
-          required,
-          value
-        }"
-      >
-      {{label}}
-    </label>
-  </template>
   <span class="invalid-feedback" :class="{ show: fails, hide: !fails }">{{ fails }}</span>
 </template>
 
@@ -112,23 +87,22 @@ import { defineComponent } from "vue";
 import { emitter } from "./form";
 import langAssets from './langs.js';
 
-let vueFormLang = 'pt_BR';
-
-const setLang = (typeof vueFormLang !== 'undefined') ? vueFormLang : 'en';
+const setLang = (typeof vrLang !== 'undefined') ? vrLang : 'pt_BR';
 
 const aText = langAssets[setLang];
 
 export default defineComponent({
-  name: 'FInput',
+  name: 'vrInput',
   props: {
     modelValue: { type: [String, Array], required: true },
-    id: { type: String, required: true },
+
     type: { type: String, required: true },
     validate: { type: Object, required: false },
+    id: { type: String, required: true },
     class: { type: String, required: false },
     placeholder: { type: String, required: false },
     rules: { type: String, required: false },
-    autocomplete: { type: Boolean, required: false },
+    autocomplete: { type: String, required: false, default: 'off' },
     autofocus: { type: Boolean, required: false },
     checked: { type: Boolean, required: false },
     disabled: { type: Boolean, required: false },
@@ -137,6 +111,8 @@ export default defineComponent({
     required: { type: Boolean, required: false },
     min: { type: Number, required: false },
     max: { type: Number, required: false },
+    removeDefaultClass: { type: Boolean, required: false },
+
     options: { type: Array, required: false },
     searchPlaceholder: { type: String, required: false, default: aText.searchPlaceholder },
     search: { type: Boolean, required: false },
@@ -144,9 +120,7 @@ export default defineComponent({
     checkAll: { type: Boolean, required: false },
     checkAllText: { type: String, required: false, default: aText.checkAll },
     uncheckAllText: { type: String, required: false, default: aText.uncheckAll },
-    removeDefaultClass: { type: Boolean, required: false },
-    label: { type: String, required: false },
-    value: { required: false }
+    maxSelectedDisplay: { type: Number, required: false, default: 4},
   },
   data() {
     return {
@@ -160,29 +134,32 @@ export default defineComponent({
       noneSelectedOptions: true,
       aText: aText,
       isInput: false,
-      arrReturn: []
+      arrReturn: [],
+      hash: null,
     };
   },
   mounted() {
-    ['text', 'email', 'number'].map(item => {
-      this.isInput = (item == this.type);
-    });
+    this.hash = (Math.random() + 1).toString(36).substring(7);
+    let type = this.type;
+    this.isInput = (type == 'text' || type == 'email' || type == 'number');
+
     if(this.type == 'select') {
-      if(typeof this.options == 'undefined') console.warn(`The component '${this.id}' was defined as a select but no options was given`);
+      if(typeof this.options == 'undefined')
+        console.warn(`The component '${this.id}' was defined as a select but no options was given`);
     }
 
     let shouldValidate = typeof this.rules == 'undefined';
-    this.validate[this.id] = shouldValidate;
+    this.validate[this.hash] = shouldValidate;
 
     emitter.on("doValidate", (modelName) => {
-      if (this.id != modelName) return;
-      this.doValidate(this.idValue);
+      if (this.hash != modelName) return;
+      this.doValidate(this.modelValue);
     });
   },
-  created () {
-    document.addEventListener('click', this.documentClick)
+  created(){
+    document.addEventListener('click', this.documentClick);
   },
-  destroyed () {
+  destroyed(){
     document.removeEventListener('click', this.documentClick)
   },
   watch: {
@@ -217,12 +194,7 @@ export default defineComponent({
   },
   methods: {
     documentClick(e){
-      if(this.type == 'select'){
-        let classes = e.target.classList;
-        let isNotSelect = (!classes.contains('vue__form-select') && !classes.contains('vue__form-select_selected-option-text'));
-        if(this.selectOptionsExpanded && isNotSelect)
-          this.selectOptionsExpanded = false;
-      }
+      this.selectOptionsExpanded = false;
     },
     expandSelectOptions(){
       if(this.readonly || this.disabled) return this.selectOptionsExpanded = false;
@@ -248,7 +220,7 @@ export default defineComponent({
             i++;
           }
         }
-        this.selectedOptionsText = (options.length > 3) ? `${options.length} ${aText.selectedItems}` : options.join(', ');
+        this.selectedOptionsText = (options.length > this.maxSelectedDisplay) ? `${options.length} ${aText.selectedItems}` : options.join(', ');
         if(!options.length) this.selectedOptionsText = this.placeholder;
       }else{
         this.selectedOptions = {};
@@ -266,6 +238,7 @@ export default defineComponent({
 
       this.noneSelectedOptions = (!selected.length);
 
+      this.$emit('onSelect', selected);
       this.updateValue(selected);
     },
     doCheckAll(){
@@ -276,15 +249,6 @@ export default defineComponent({
     },
     updateValue(e) {
       let value = (e.target && typeof e.target.value !== 'undefined') ? e.target.value : e;
-      if(this.type == 'checkbox' || this.type == 'radio'){
-        // value = e.target.checked ? value : null;
-        if(Array.isArray(this.modelValue)){
-          value = this.arrReturn.push(value);
-        }
-
-        console.log(Array.isArray(this.modelValue))
-        return
-      }
       this.$emit('update:modelValue', value);
       this.doValidate(value);
     },
@@ -336,14 +300,14 @@ export default defineComponent({
       }
 
       this.fails = fails;
-      this.validate[this.id] = !fails;
+      this.validate[this.hash] = !fails;
     },
     emailValidate(email){
       return String(email).toLowerCase()
       .match( /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ );
     }
   },
-  emits: ['update:modelValue', 'input'],
+  emits: ['update:modelValue', 'input', 'onSelect'],
 });
 </script>
 

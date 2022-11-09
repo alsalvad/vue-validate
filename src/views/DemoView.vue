@@ -40,7 +40,7 @@
 
     <div class="row mt-3">
       <div class="form-group col-md-6">
-        <FInput
+        <vrInput
           v-model="form.text"
           :validate="validate"
           class="form-control"
@@ -62,7 +62,7 @@
 
       <div class="col-md-6 code-details" :class="{ active: codeState.text }">
 <pre>
-<code class="html"> &lt;FInput
+<code class="html"> &lt;vrInput
   v-model=&quot;form.text&quot;
   :validate=&quot;validate&quot;
   class=&quot;form-control&quot;
@@ -78,7 +78,7 @@
 
     <div class="row mt-3">
       <div class="form-group col-md-6">
-        <FInput
+        <vrInput
           v-model="form.notspecial"
           :validate="validate"
           class="form-control"
@@ -100,12 +100,12 @@
 
       <div class="col-md-6 code-details" :class="{ active: codeState.notspecial }">
 <pre>
-<code class="html"> &lt;FInput
+<code class="html"> &lt;vrInput
   v-model=&quot;form.notspecial&quot;
   :validate=&quot;validate&quot;
   class=&quot;form-control&quot;
   id=&quot;notspecial&quot;
-  type=&quot;notspecial&quot;
+  type=&quot;text&quot;
   placeholder=&quot;Not special&quot;
   rules=&quot;required|notspecial&quot;
 /&gt;
@@ -116,7 +116,7 @@
 
     <div class="row mt-3">
       <div class="form-group col-md-6">
-        <FInput
+        <vrInput
           v-model="form.email"
           :validate="validate"
           class="form-control"
@@ -138,7 +138,7 @@
 
       <div class="col-md-6 code-details" :class="{ active: codeState.email }">
 <pre>
-<code class="html"> &lt;FInput
+<code class="html"> &lt;vrInput
   v-model=&quot;form.email&quot;
   :validate=&quot;validate&quot;
   class=&quot;form-control&quot;
@@ -154,7 +154,7 @@
 
     <div class="row mt-3">
       <div class="form-group col-md-6">
-        <FInput
+        <vrInput
           v-model="form.number"
           :validate="validate"
           class="form-control"
@@ -176,7 +176,7 @@
 
       <div class="col-md-6 code-details" :class="{ active: codeState.number }">
 <pre>
-<code class="html"> &lt;FInput
+<code class="html"> &lt;vrInput
   v-model=&quot;form.number&quot;
   :validate=&quot;validate&quot;
   class=&quot;form-control&quot;
@@ -192,7 +192,7 @@
 
     <div class="row mt-3">
       <div class="form-group col-md-6">
-        <FInput
+        <vrInput
           v-model="form.textarea"
           :validate="validate"
           id="textarea"
@@ -215,7 +215,7 @@
 
       <div class="col-md-6 code-details" :class="{ active: codeState.textarea }">
 <pre>
-<code class="html"> &lt;FInput
+<code class="html"> &lt;vrInput
   v-model=&quot;form.textarea&quot;
   :validate=&quot;validate&quot;
   id=&quot;textarea&quot;
@@ -232,7 +232,7 @@
 
     <div class="row mt-3">
       <div class="form-group col-md-6">
-        <FInput
+        <vrInput
           v-model="form.select"
           :validate="validate"
           id="nome"
@@ -254,7 +254,7 @@
 
       <div class="col-md-6 code-details" :class="{ active: codeState.select }">
 <pre>
-<code class="html"> &lt;FInput
+<code class="html"> &lt;vrInput
   v-model=&quot;form.select&quot;
   :validate=&quot;validate&quot;
   id=&quot;nome&quot;
@@ -270,7 +270,7 @@
 
     <div class="row mt-3">
       <div class="form-group col-md-6">
-        <FInput
+        <vrInput
           v-model="form.selectMultiple"
           :validate="validate"
           id="nome"
@@ -283,6 +283,8 @@
           placeholder="Custom none selected options"
           searchPlaceholder="Custom search placeholder..."
           searchClass="form-control"
+          :maxSelectedDisplay="4"
+          @onSelect="selectedOption"
         />
       </div>
       <div class="form-group col-md-6 result">
@@ -297,7 +299,7 @@
 
       <div class="col-md-6 code-details" :class="{ active: codeState.selectMultiple }">
 <pre>
-<code class="html"> &lt;FInput
+<code class="html"> &lt;vrInput
   v-model=&quot;form.selectMultiple&quot;
   :validate=&quot;validate&quot;
   id=&quot;nome&quot;
@@ -310,6 +312,7 @@
   placeholder=&quot;Custom none selected options&quot;
   searchPlaceholder=&quot;Custom search placeholder...&quot;
   seachClass=&quot;form-control&quot;
+  :maxSelectedDisplay=&quot;2&quot;
 /&gt;
 </code>
 </pre>
@@ -318,7 +321,7 @@
 
     <div class="row mt-3">
       <div class="form-group col-md-6">
-        <FInput
+        <vrInput
           v-model="form.noclass"
           :validate="validate"
           id="noclass"
@@ -340,7 +343,7 @@
 
       <div class="col-md-6 code-details" :class="{ active: codeState.noclass }">
 <pre>
-<code class="html">&lt;FInput
+<code class="html">&lt;vrInput
   v-model=&quot;form.noclass&quot;
   :validate=&quot;validate&quot;
   id=&quot;noclass&quot;
@@ -354,130 +357,10 @@
       </div>
     </div>
 
-    <div class="row mt-3">
-      <div class="form-group col-md-6">
-        <!-- <label>
-          <input type="checkbox" v-model="form.checkbox" value="1">
-        </label>
-        <label>
-          <input type="checkbox" v-model="form.checkbox" value="2">
-        </label>
-        <label>
-          <input type="checkbox" v-model="form.checkbox" value="3">
-        </label> -->
-        <FInput
-          v-model="form.checkbox"
-          :validate="validate"
-          id="checkbox"
-          type="checkbox"
-          rules="required|min:2|max:4"
-          value="1"
-          label="Checkbox"
-        />
-        <FInput
-          v-model="form.checkbox"
-          :validate="validate"
-          id="checkbox"
-          type="checkbox"
-          rules="required|min:2|max:4"
-          value="2"
-          label="Checkbox"
-        />
-        <FInput
-          v-model="form.checkbox"
-          :validate="validate"
-          id="checkbox"
-          type="checkbox"
-          rules="required|min:2|max:4"
-          value="3"
-          label="Checkbox"
-        />
-      </div>
-      <div class="form-group col-md-6 result">
-        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="codeState.checkbox = !codeState.checkbox" :class="{ active: codeState.checkbox }">
-          <i class="fa fa-code"></i>
-        </button>
-        <span>
-          <h6>Checkbox: </h6>
-          {{form.checkbox}}
-        </span>
-      </div>
-
-      <div class="col-md-6 code-details" :class="{ active: codeState.checkbox }">
-<pre>
-<code class="html">&lt;FInput
-  v-model=&quot;form.noclass&quot;
-  :validate=&quot;validate&quot;
-  id=&quot;noclass&quot;
-  type=&quot;text&quot;
-  rules=&quot;required|min:2|max:4&quot;
-  placeholder=&quot;No class&quot;
-  removeDefaultClass
-/&gt;
-</code>
-</pre>
-      </div>
-    </div>
-
-    <div class="row mt-3">
-      <div class="form-group col-md-6">
-        <FInput
-          v-model="form.radio"
-          :validate="validate"
-          id="radio"
-          type="radio"
-          rules="required|min:2|max:4"
-          value="1"
-          label="Radio"
-        />
-        <FInput
-          v-model="form.radio"
-          :validate="validate"
-          id="radio"
-          type="radio"
-          rules="required|min:2|max:4"
-          value="2"
-          label="Radio"
-        />
-        <FInput
-          v-model="form.radio"
-          :validate="validate"
-          id="radio"
-          type="radio"
-          rules="required|min:2|max:4"
-          value="3"
-          label="Radio"
-        />
-      </div>
-      <div class="form-group col-md-6 result">
-        <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="See code" @click="codeState.radio = !codeState.radio" :class="{ active: codeState.radio }">
-          <i class="fa fa-code"></i>
-        </button>
-        <span>
-          <h6>Radio: </h6>
-          {{form.radio}}
-        </span>
-      </div>
-
-      <div class="col-md-6 code-details" :class="{ active: codeState.radio }">
-<pre>
-<code class="html">&lt;FInput
-  v-model=&quot;form.noclass&quot;
-  :validate=&quot;validate&quot;
-  id=&quot;noclass&quot;
-  type=&quot;text&quot;
-  rules=&quot;required|min:2|max:4&quot;
-  placeholder=&quot;No class&quot;
-  removeDefaultClass
-/&gt;
-</code>
-</pre>
-      </div>
-    </div>
-
-    <!-- <FButton v-for="item in itens" @click="teste(item.id)" class="btn btn-info">
-      {{item.id}}
-    </FButton> -->
+    <button @click="submit" class="btn btn-primary">Submit</button>
+    <!-- <vrButton @click="submit" :state="submitState" :validate="validate" class="btn btn-primary">
+      Submit
+    </vrButton> -->
   </div>
 </template>
 
@@ -485,7 +368,8 @@
 import { defineComponent } from "vue";
 import api from '@/services/api';
 import hljs from 'highlight.js/lib/common';
-// console.log(hljs)
+import { doValidate } from "../components/forms/form";
+
 window.onload = function WindowLoad(event) {
   hljs.highlightAll();
 }
@@ -517,26 +401,13 @@ export default defineComponent({
         selectMultiple: false,
         noclass: false
       },
-      validate: [],
-      itens: [
-        {id: '1'},
-        {id: '2'},
-        {id: '3'},
-        {id: '4'},
-      ],
+      submitState: false,
+      validate: {},
       btnState: [],
       options: []
     }
   },
   mounted(){
-    // this.options = [
-    //   { label: '01', value: 1 },
-    //   { label: '02', value: 2 },
-    //   { label: '03', value: 3 },
-    //   { label: '04', value: 4 },
-    //   { label: '05', value: 5 },
-    //   { label: '06', value: 6 },
-    // ]
     api.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados/').then(({data}) => {
       let options = [];
       data.map((item, i) => {
@@ -546,13 +417,17 @@ export default defineComponent({
     });
   },
   methods: {
-    load(){
-
+    submit(){
+      setTimeout(() => this.submitState = true);
+      doValidate(this.validate);
     },
     toggleAll(){
       for(let item in this.codeState){
         this.codeState[item] = !this.codeState[item];
       }
+    },
+    selectedOption(value){
+
     }
   }
 });
