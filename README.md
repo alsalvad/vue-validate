@@ -15,9 +15,9 @@
 
   <p>
     Veja o projeto funcionando! <br>
-    1. Clone
-    2. npm install
-    3. npm run dev
+    1. Clone <br>
+    2. npm install <br>
+    3. npm run dev <br>
   </p>
 </p>
 
