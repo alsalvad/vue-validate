@@ -10,9 +10,9 @@ const router = createRouter({
       component: DemoView,
     },
     {
-      path: "/code",
-      name: "code",
-      component: () => import("../views/CodeView.vue"),
+      path: "/sobre",
+      name: "sobre",
+      component: () => import("../views/SobreView.vue"),
     },
     {
       path: "/sandbox",

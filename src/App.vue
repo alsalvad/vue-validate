@@ -13,9 +13,9 @@ import { RouterLink, RouterView } from "vue-router";
     />
 
     <nav>
-      <RouterLink to="/">Demo</RouterLink>
-      <RouterLink to="/code">Code <i class="fa fa-code"></i></RouterLink>
-      <RouterLink to="/sandbox">Sandbox <i class="fa fa-vial"></i></RouterLink>
+      <RouterLink to="/">Demo <i class="fa fa-code"></i></RouterLink>
+      <RouterLink to="/sobre">Sobre <i class="fa fa-info"></i></RouterLink>
+      <!-- <RouterLink to="/sandbox">Sandbox <i class="fa fa-vial"></i></RouterLink> -->
     </nav>
   </header>
 

@@ -5,6 +5,7 @@
         <button type="button" class="btn btn-sm btn-secondary expandCode" tabindex="-1" title="Toggle All" @click="toggleAll">
           <i class="fa fa-code"></i>
         </button>
+        <p>Clique nos botões para visualizar o código</p>
       </div>
     </div>
     <div class="row mt-3">
